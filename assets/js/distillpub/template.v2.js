@@ -2705,7 +2705,16 @@ d-citation-list .references .title {
         },
 
         tokenize: function (text, grammar) {
-          var rest = grammar.rest;
+          // Sanitize the grammar object
+          var sanitizedGrammar = Object.create(null); // Create a prototype-less object
+          for (var key in grammar) {
+            if (key === "__proto__" || key === "constructor" || key === "prototype") {
+              continue;
+            }
+            sanitizedGrammar[key] = grammar[key];
+          }
+
+          var rest = sanitizedGrammar.rest;
           if (rest) {
             var safeRest = Object.create(null); // Create a prototype-less object
             for (var token in rest) {
@@ -2715,14 +2724,14 @@ d-citation-list .references .title {
               safeRest[token] = rest[token];
             }
 
-            Object.assign(grammar, safeRest); // Safely assign validated keys
-            delete grammar.rest;
+            Object.assign(sanitizedGrammar, safeRest); // Safely assign validated keys
+            delete sanitizedGrammar.rest;
           }
 
           var tokenList = new LinkedList();
           addAfter(tokenList, tokenList.head, text);
 
-          matchGrammar(text, tokenList, grammar, tokenList.head, 0);
+          matchGrammar(text, tokenList, sanitizedGrammar, tokenList.head, 0);
 
           return toArray(tokenList);
         },
