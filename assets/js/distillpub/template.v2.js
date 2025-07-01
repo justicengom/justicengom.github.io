@@ -2707,13 +2707,15 @@ d-citation-list .references .title {
         tokenize: function (text, grammar) {
           var rest = grammar.rest;
           if (rest) {
+            var safeRest = Object.create(null); // Create a prototype-less object
             for (var token in rest) {
               if (token === "__proto__" || token === "constructor" || token === "prototype") {
                 continue;
               }
-              grammar[token] = rest[token];
+              safeRest[token] = rest[token];
             }
 
+            Object.assign(grammar, safeRest); // Safely assign validated keys
             delete grammar.rest;
           }
 
