@@ -3186,7 +3186,7 @@ d-citation-list .references .title {
         var def = {};
         def[tagName] = {
           pattern: RegExp(
-            /(<__[\s\S]*?>)(?:<!\[CDATA\[[\s\S]*?\]\]>\s*|[\s\S])*?(?=<\/__>)/.source.replace(/__/g, function () {
+            /(<__[\s\S]*?>)(?:<!\[CDATA\[[^\]]*\]\]>(?:[^\S\r\n]+|)|[^<])*?(?=<\/__>)/.source.replace(/__/g, function () {
               return tagName;
             }),
             "i"
